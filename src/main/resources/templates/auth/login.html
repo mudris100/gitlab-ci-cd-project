@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+  <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+  <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+  <main class="container">
+    <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+      <form class="card" style="width: 320px;" th:action="@{/login}" method="post">
+        <div th:if="${param.error}" class="alert alert-error">Invalid credentials</div>
+        <h2>Sign In</h2>
+        <div class="form-group">
+          <label for="login-name">Login:</label>
+          <input type="text" id="login-name" name="username" placeholder="Enter username" required>
+        </div>
+        <div class="form-group">
+          <label for="login-pw">Password:</label>
+          <input type="password" id="login-pw" name="password" placeholder="Enter password" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign in</button>
+      </form>
+
+      <div class="card" style="width: 320px;">
+        <form th:action="@{/register}" method="post" th:object="${dto}">
+          <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+          <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+          <h2>Sign Up</h2>
+          <div class="form-group">
+            <label for="reg-name">Login:</label>
+            <input type="text" id="reg-name" th:field="*{username}" placeholder="Choose a username">
+            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="alert alert-error">Error</div>
+          </div>
+          <div class="form-group">
+            <label for="reg-pw">Password:</label>
+            <input type="password" id="reg-pw" th:field="*{password}" placeholder="Create a password">
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="alert alert-error">Error</div>
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Enter email:</label>
+            <input type="email" id="reg-email" th:field="*{email}" placeholder="Your email address">
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="alert alert-error">Error</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top: 40px;">
+      <div style="margin-bottom: 20px; color: white; font-weight: bold;">OR</div>
+      <a href="" class="btn" style="background: #24292e; color: white; width: 240px; margin: 10px;">Login with
+        GitHub</a>
+      <a href="" class="btn" style="background: #ea4335; color: white; width: 240px; margin: 10px;">Login with
+        Google</a>
+    </div>
+  </main>
+</body>
+
+</html>

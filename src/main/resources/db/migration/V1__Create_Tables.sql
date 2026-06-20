@@ -1,0 +1,38 @@
+CREATE TABLE users(
+id SERIAL PRIMARY KEY,
+username VARCHAR(32) NOT NULL,
+password VARCHAR(128),
+email VARCHAR(32),
+role VARCHAR(16)
+);
+
+CREATE TABLE posts (
+id BIGSERIAL PRIMARY KEY,
+title VARCHAR(256) NOT NULL,
+content TEXT,
+published_on TIMESTAMP DEFAULT NOW(),
+updated_on TIMESTAMP,
+status VARCHAR(16) NOT NULL DEFAULT 'DRAFT',
+user_id INT NOT NULL REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE comments (
+    id BIGSERIAL PRIMARY KEY,
+    content VARCHAR(1000) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP,
+    post_id BIGINT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    author_id INT REFERENCES users(id) ON DELETE SET NULL,
+    name VARCHAR(32)
+);
+
+CREATE TABLE tags (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE post_tags (
+    post_id BIGINT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    tag_id BIGINT NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, tag_id)
+);

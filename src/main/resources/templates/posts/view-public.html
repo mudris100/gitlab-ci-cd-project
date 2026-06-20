@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${post.title}">Post Details</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <a href="/" class="btn btn-primary" style="margin-bottom: 20px;">← Back to Posts</a>
+
+        <article class="card">
+            <header style="border-bottom: 2px solid var(--border-color); margin-bottom: 20px; padding-bottom: 20px;">
+                <h1 th:text="${post.title}">Post Title</h1>
+                <div class="post-meta">
+                    <span>👤 <span th:text="${post.author.username}">Author</span></span>
+                    <span>📅 <span th:text="${#temporals.format(post.publishedOn, 'MMM dd, yyyy')}">Date</span></span>
+                    <span class="badge badge-primary">Published</span>
+                </div>
+            </header>
+
+            <div style="white-space: pre-wrap;" th:text="${post.content}">
+                Post content goes here...
+            </div>
+        </article>
+
+        <div class="text-center" style="margin: 40px 0;">
+            <h2 style="color: white;">Comments</h2>
+        </div>
+
+        <section class="card">
+            <div th:if="${#lists.isEmpty(comments)}" class="text-center"
+                style="padding: 20px; color: var(--text-muted);">
+                No comments yet. <a href="/auth/login" style="font-weight: bold;">Login</a> to be the first to comment!
+            </div>
+
+            <div th:if="${!#lists.isEmpty(comments)}">
+                <div class="comment-item" th:each="comment : ${comments}">
+                    <div class="comment-header">
+                        <span class="comment-author" th:text="${comment.author}">Author</span>
+                        <div class="comment-date">
+                            <span th:text="${#temporals.format(comment.createdAt, 'MMM dd, yyyy HH:mm')}">Created
+                                at</span>
+                        </div>
+                    </div>
+                    <div th:text="${comment.content}">Comment content</div>
+                </div>
+            </div>
+
+            <div class="alert alert-success text-center"
+                style="margin-top: 20px; background: rgba(180, 85, 85, 0.555); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                <strong>Want to join the discussion?</strong> You need to be logged in to comment. Please <a
+                    href="/auth/login" style="color: white; text-decoration: underline;">login</a> or <a
+                    href="/auth/login" style="color: white; text-decoration: underline;">register</a>.
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 30px;">
+                <span style="font-size: 3rem;">✍️</span>
+                <h2>Write Your Story</h2>
+                <p>Share your thoughts with the world</p>
+            </div>
+
+            <form th:action="@{/posts}" th:object="${post}" method="post">
+                <div class="form-group">
+                    <label for="title">📝 Title</label>
+                    <input type="text" th:field="*{title}" placeholder="Enter an engaging title..." required
+                        th:attr="maxlength=100" />
+                    <small style="color: var(--text-muted);">100 characters max</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">📄 Content</label>
+                    <textarea th:field="*{content}" placeholder="What's on your mind? Share your story..."
+                        th:attr="maxlength=3000" style="min-height: 200px;"></textarea>
+                    <small style="color: var(--text-muted);">3000 characters max</small>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="status">📌 Status</label>
+                        <select th:field="*{status}">
+                            <option value="DRAFT">💾 Draft (Save for later)</option>
+                            <option value="PUBLISHED">🚀 Published (Share with everyone)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tags">🏷️ Tags</label>
+                        <input type="text" id="tags" th:field="*{tags}" placeholder="Java, Spring Boot, Web Development"
+                            th:attr="maxlength=100">
+                        <div th:if="${not #lists.isEmpty(availableTags)}" style="margin-top: 10px;">
+                            <small style="display: block; margin-bottom: 5px; font-weight: bold;">Existing tags:</small>
+                            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                <span th:each="tag : ${availableTags}" class="badge badge-primary"
+                                    th:text="${tag.name}">Tag</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <a th:href="@{/}" class="btn" style="background: #e2e8f0; color: #4a5568;">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        ✨ Publish Post
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/common :: footer}"></th:block>
+</body>
+
+</html>

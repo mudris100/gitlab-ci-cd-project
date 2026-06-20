@@ -1,0 +1,19 @@
+---
+- name: Create swap file
+  ansible.builtin.command:
+    cmd: fallocate -l 1G /swapfile
+    creates: /swapfile
+  notify:
+    - Format swap file
+    - Enable swap
+
+- name: Set swap file permissions
+  ansible.builtin.file:
+    path: /swapfile
+    mode: "0600"
+
+- name: Add swap to fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    line: "/swapfile none swap sw 0 0"
+    state: present

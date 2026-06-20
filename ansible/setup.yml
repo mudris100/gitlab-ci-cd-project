@@ -1,0 +1,10 @@
+---
+- name: Install Docker, Nginx, Cloudflare SSL/TLS Certificate
+  hosts: all
+  become: true
+
+  roles:
+    - swap
+    - docker
+    - nginx
+    - ssl

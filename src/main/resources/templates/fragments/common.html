@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Theme Toggle Script - Include in <head> -->
+<th:block th:fragment="theme-script">
+<script>
+    // Load saved theme on page load
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const theme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }
+</script>
+</th:block>
+
+<!-- Common CSS includes -->
+<th:block th:fragment="common-css">
+<link rel="stylesheet" th:href="@{/css/variables.css}">
+<link rel="stylesheet" th:href="@{/css/base.css}">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/components.css}">
+<link rel="stylesheet" th:href="@{/css/blog.css}">
+</th:block>
+
+<!-- Navbar -->
+<th:block th:fragment="navbar">
+<header class="navbar">
+    <div class="logo">My Blog</div>
+    <button class="theme-toggle navbar-theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#127763;</button>
+    <nav>
+        <span sec:authorize="isAnonymous()">
+            <a th:href="@{/auth/login}">Login</a>
+            <a th:href="@{https://udris.dev}" class="main-link">Main Site</a>
+        </span>
+
+        <span sec:authorize="hasRole('ADMIN')">
+            <span class="welcome-message">Welcome, <span sec:authentication="name"></span>!</span>
+            <a th:href="@{/}">Blog</a>
+            <a th:href="@{/admin/users}">Users</a>
+            <a th:href="@{/admin/tags}">Tags</a>
+            <a th:href="@{/logout}">Logout</a>
+            <a th:href="@{https://udris.dev}" class="main-link">Main Site</a>
+        </span>
+
+        <span sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
+            <span class="welcome-message">Welcome, <span sec:authentication="name"></span>!</span>
+            <a th:href="@{/}">Blog</a>
+            <a th:href="@{/users/profile}">Profile</a>
+            <a th:href="@{/posts/new}">New Post</a>
+            <a th:href="@{/logout}">Logout</a>
+            <a th:href="@{https://udris.dev}" class="main-link">Main Site</a>
+        </span>
+    </nav>
+</header>
+</th:block>
+
+<!-- Footer -->
+<th:block th:fragment="footer">
+<footer class="footer">
+    <p>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> My Blog. All rights reserved.</p>
+</footer>
+</th:block>
+
+</body>
+</html>

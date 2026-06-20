@@ -1,0 +1,22 @@
+- name: Create SSL directory
+  ansible.builtin.file:
+    path: /etc/nginx/ssl
+    state: directory
+    mode: "0755"
+
+- name: Install Cloudflare certificate
+  ansible.builtin.copy:
+    src: "{{ cloudflare_cert }}"
+    dest: /etc/nginx/ssl/cloudflare.crt
+    mode: "0644"
+
+- name: Install Cloudflare private key
+  ansible.builtin.copy:
+    src: "{{ cloudflare_key }}"
+    dest: /etc/nginx/ssl/cloudflare.key
+    mode: "0600"
+
+- name: Restart NGINX
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

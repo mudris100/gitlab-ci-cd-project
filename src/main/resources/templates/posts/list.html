@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog</title>
+    <link rel="icon" href="/favicon.ico">
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <div th:if="${#lists.isEmpty(posts)}" class="card text-center">
+            <div style="font-size: 4em; margin-bottom: 20px;">📝</div>
+            <h2>No blog posts yet</h2>
+            <p>Check back soon for new content!</p>
+        </div>
+
+        <div class="posts-grid">
+            <article th:each="post : ${posts}" class="card">
+                <div class="post-card-header">
+                    <h2 class="post-title">
+                        <a th:href="@{'/posts/' + ${post.postId}}" th:text="${post.title}">Post Title</a>
+                    </h2>
+                </div>
+
+                <div class="post-excerpt"
+                    th:text="${post.content.length() > 150 ? post.content.substring(0, 150) + '...' : post.content}">
+                </div>
+
+                <div class="post-meta">
+                    <span class="author">
+                        <span class="meta-icon">👤</span>
+                        <span th:text="${post.authorName}">Author</span>
+                    </span>
+                    <span class="date">
+                        <span class="meta-icon">📅</span>
+                        <span th:text="${#temporals.format(post.publishedOn, 'MMM dd, yyyy')}">Date</span>
+                    </span>
+                </div>
+
+                <div th:if="${post.tags != null and !post.tags.isEmpty()}" class="post-tags">
+                    <span class="tags-label">Tags:</span>
+                    <span th:each="tag : ${post.tags.split(', ')}" class="badge badge-primary">
+                        <a th:href="@{/tags/{name}(name=${tag})}" th:text="${tag}" style="color: white;">Tag</a>
+                    </span>
+                </div>
+
+                <div style="padding-top: 15px;">
+                    <a th:href="@{'/posts/' + ${post.postId}}" class="btn btn-primary">Read More →</a>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/common :: footer}"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.navbar {
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 50%, var(--secondary-color) 100%);
+  padding: 18px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 10;
+}
+
+.navbar-theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+  color: white;
+  font-size: 1.25rem;
+  transition: all var(--transition-fast);
+  margin-left: auto;
+  margin-right: 15px;
+}
+
+.navbar-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.navbar a {
+  color: var(--text-on-primary);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+}
+
+.navbar a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.navbar .logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-on-primary);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-right: auto;
+}
+
+.navbar .welcome-message {
+  color: white;
+  margin-right: 15px;
+  font-weight: 600;
+}
+
+.page-header {
+  margin-bottom: 40px;
+  color: var(--text-main);
+}
+
+.page-header h1,
+.page-header p {
+  color: var(--text-main);
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-dark), var(--secondary-color));
+}
+
+.footer {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: var(--text-on-primary);
+  text-align: center;
+  padding: 30px 20px;
+  margin-top: 50px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap;
+    padding: 15px 20px;
+    gap: 15px;
+  }
+
+  .navbar .logo {
+    width: 100%;
+    text-align: center;
+    margin-right: 0;
+  }
+
+  .container {
+    padding: 20px 15px;
+  }
+}

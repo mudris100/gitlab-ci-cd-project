@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Author</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+	<main class="container">
+		<div class="card">
+			<div class="text-center" style="margin-bottom: 30px;">
+				<span style="font-size: 3rem;">✏️</span>
+				<h2>Update Author Details</h2>
+			</div>
+
+			<form th:action="@{/admin/users/{id}/edit (id=${user.getId()})}" th:method="POST" th:object="${user}">
+				<div class="form-group">
+					<label for="username">Username</label>
+					<input type="text" id="username" th:field="*{username}" required>
+				</div>
+
+				<div class="form-group">
+					<label for="password">Password (Leave blank to keep current)</label>
+					<input type="password" id="password" th:field="*{password}">
+				</div>
+
+				<div class="form-group">
+					<label for="email">Email</label>
+					<input type="email" id="email" th:field="*{email}" required>
+				</div>
+
+				<div class="form-group">
+					<label for="role">Role</label>
+					<select id="role" th:field="*{role}">
+						<option value="USER">User</option>
+						<option value="ADMIN">Admin</option>
+					</select>
+				</div>
+
+				<div
+					style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+					<a th:href="@{/admin/users}" class="btn" style="background: #e2e8f0; color: #4a5568;">Cancel</a>
+					<button type="submit" class="btn btn-primary">Update Author</button>
+				</div>
+			</form>
+		</div>
+	</main>
+</body>
+
+</html>

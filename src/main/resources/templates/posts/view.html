@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${post.title}">Post Details</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <a href="/posts" class="btn btn-primary" style="margin-bottom: 20px;">← Back to Posts</a>
+
+        <article class="card">
+            <header style="border-bottom: 2px solid var(--border-color); margin-bottom: 20px; padding-bottom: 20px;">
+                <h1 th:text="${post.title}">Post Title</h1>
+                <div class="post-meta">
+                    <span>👤 <span th:text="${post.author.username}">Author</span></span>
+                    <span>📅 <span th:text="${#temporals.format(post.publishedOn, 'MMM dd, yyyy')}">Date</span></span>
+                    <span th:if="${post.status.name() == 'DRAFT'}" class="badge"
+                        style="background: #ed8936;">Draft</span>
+                    <span th:if="${post.status.name() == 'PUBLISHED'}" class="badge badge-primary">Published</span>
+                </div>
+            </header>
+
+            <div style="white-space: pre-wrap;" th:text="${post.content}">
+                Post content goes here...
+            </div>
+        </article>
+
+        <div class="text-center" style="margin: 40px 0;">
+            <h2 style="color: white;">Comments</h2>
+        </div>
+
+        <section class="card">
+            <div th:if="${#lists.isEmpty(comments)}" class="text-center"
+                style="padding: 20px; color: var(--text-muted);">
+                No comments yet. Be the first to share your thoughts!
+            </div>
+
+            <div th:if="${!#lists.isEmpty(comments)}">
+                <div class="comment-item" th:each="comment : ${comments}">
+                    <div class="comment-header">
+                        <span class="comment-author" th:text="${comment.author}">Author</span>
+                        <div class="comment-date">
+                            <span th:text="'Created: ' + ${#temporals.format(comment.createdAt, 'MMM dd, yyyy HH:mm')}"
+                                th:if="${comment.updatedAt == null}">
+                                Created at
+                            </span>
+                            <span th:text="'Updated: ' + ${#temporals.format(comment.updatedAt, 'MMM dd, yyyy HH:mm')}"
+                                th:if="${comment.updatedAt != null}">
+                                Updated at
+                            </span>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;" th:text="${comment.content}">Comment content</div>
+                    <div style="display: flex; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;"
+                        th:if="${currentUsername != null and currentUsername == comment.author}">
+                        <a th:href="@{'/comments/' + ${comment.id} + '/edit'}" class="btn btn-primary"
+                            style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                        <a th:href="@{'/comments/' + ${comment.id} + '/delete'}" class="btn btn-danger"
+                            style="padding: 5px 10px; font-size: 12px;"
+                            onclick="return confirm('Are you sure you want to delete this comment?')">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="card" style="margin-top: 30px;">
+            <h3>Add a Comment</h3>
+            <form th:action="@{'/posts/' + ${post.id} + '/comment'}" th:object="${comment}" method="post">
+                <div class="form-group">
+                    <label for="content">Your Comment</label>
+                    <textarea id="content" th:field="*{content}" required
+                        placeholder="Share your thoughts about this post..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>

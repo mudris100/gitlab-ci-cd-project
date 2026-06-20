@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tag Management</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1>Tag Management</h1>
+                <a th:href="@{/admin/tags/new}" class="btn btn-primary">Create Tag</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(tags)}" class="text-center">
+                <p>No tags found.</p>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(tags)}">
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                            <th style="padding: 12px;">ID</th>
+                            <th style="padding: 12px;">Name</th>
+                            <th style="padding: 12px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="tag : ${tags}" style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px;" th:text="${tag.id}"></td>
+                            <td style="padding: 12px;" th:text="${tag.name}"></td>
+                            <td style="padding: 12px;">
+                                <a th:href="@{/admin/tags/{id}/edit(id=${tag.id})}" class="btn btn-primary"
+                                    style="padding: 5px 10px; font-size: 12px;">Edit</a>
+                                <form th:action="@{/admin/tags/{id}/delete(id=${tag.id})}" method="post"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-danger"
+                                        style="padding: 5px 10px; font-size: 12px;"
+                                        onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

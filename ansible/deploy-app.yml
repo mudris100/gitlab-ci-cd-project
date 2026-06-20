@@ -1,0 +1,43 @@
+- name: Deploy blog app using Docker Compose
+  hosts: all
+  become: true
+  vars:
+    docker_deploy_dest: /home/ubuntu/blog-app
+    docker_deploy_src: ./blog-app/
+  vars_files:
+    - group_vars/vault.yml
+
+  tasks:
+    - name: Create project directory
+      ansible.builtin.file:
+        path: "{{ docker_deploy_dest }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+
+    - name: Copy blog-app files
+      ansible.builtin.copy:
+        src: "{{ docker_deploy_src }}"
+        dest: "{{ docker_deploy_dest }}/"
+        mode: preserve
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Deploy .env file
+      ansible.builtin.template:
+        src: .env.j2
+        dest: "{{ docker_deploy_dest }}/.env"
+        mode: "0600"
+
+    - name: Log in to GitLab Container Registry
+      community.docker.docker_login:
+        registry_url: "{{ registry }}"
+        username: "{{ registry_user }}"
+        password: "{{ registry_password }}"
+
+    - name: Start docker compose
+      community.docker.docker_compose_v2:
+        project_src: "{{ docker_deploy_dest }}"
+        state: present
+        pull: always

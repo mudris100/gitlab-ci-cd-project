@@ -1,0 +1,41 @@
+---
+- name: Install NGINX
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Deploy blog-app NGINX config
+  ansible.builtin.copy:
+    src: nginx-blog-app.conf
+    dest: /etc/nginx/sites-available/blog-app
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy Grafana NGINX config
+  ansible.builtin.copy:
+    src: nginx-grafana.conf
+    dest: /etc/nginx/sites-available/grafana
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable blog-app site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/blog-app
+    dest: /etc/nginx/sites-enabled/blog-app
+    state: link
+    force: true
+
+- name: Enable grafana site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/grafana
+    dest: /etc/nginx/sites-enabled/grafana
+    state: link
+    force: true
+
+- name: Remove default config
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent

@@ -1,0 +1,165 @@
+---
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+cache:
+  paths:
+    - .m2/repository
+
+stages:
+  - test
+  - build
+  - docker
+  - infra
+  - config
+  - deploy
+
+variables:
+  IMAGE_TAG: $CI_COMMIT_SHA
+  TF_IN_AUTOMATION: "true"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+# Reusable templates (anchors)
+
+.mvn_template:
+  image: maven:3.9.6-eclipse-temurin-17
+  tags:
+    - home-runner
+  before_script:
+    - mvn -version
+
+.terraform_template:
+  image:
+    name: hashicorp/terraform:1.7.5
+    entrypoint: [""]
+  tags:
+    - home-runner
+  before_script:
+    - terraform --version
+
+.ansible_template:
+  image: ubuntu:22.04
+  tags:
+    - home-runner
+  before_script:
+    - apt-get update -y
+    - apt-get install -y python3-pip openssh-client
+    - pip install --no-cache-dir ansible
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+
+# 1. Test (MR only)
+
+test:
+  extends: .mvn_template
+  stage: test
+  script:
+    - mvn -B -Dmaven.repo.local=.m2/repository test
+  artifacts:
+    when: always
+    reports:
+      junit: target/surefire-reports/*.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# 2. Build JAR
+
+build:
+  extends: .mvn_template
+  stage: build
+  script:
+    - mvn -B -Dmaven.repo.local=.m2/repository clean package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+    expire_in: 1 hour
+
+# 3. Build & Push Docker image
+
+docker-build:
+  stage: docker
+  image: docker:24.0.5
+  tags:
+    - home-runner
+  services:
+    - docker:24.0.5-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  needs:
+    - build
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER"
+      --password-stdin "$CI_REGISTRY"
+    - docker build -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
+    - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+
+# 4. Terraform Apply (EC2 + Cloudflare DNS)
+
+terraform-apply:
+  extends: .terraform_template
+  stage: infra
+  needs:
+    - docker-build
+  script:
+    - terraform -chdir=terraform init
+    - terraform -chdir=terraform apply -auto-approve
+    - terraform -chdir=terraform output -raw ec2_public_ip > terraform/ec2_ip.txt
+    - cat terraform/ec2_ip.txt
+  artifacts:
+    paths:
+      - terraform/ec2_ip.txt
+
+# 5. Configure Server (NGINX, Docker, SSL)
+
+configure:
+  extends: .ansible_template
+  stage: config
+  needs:
+    - terraform-apply
+  script:
+    - export SERVER_IP=$(cat terraform/ec2_ip.txt)
+    - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+    - |
+      ansible-playbook \
+        -i "$SERVER_IP," \
+        -e "ansible_user=ubuntu" \
+        -e "cloudflare_cert=$CLOUDFLARE_CERT" \
+        -e "cloudflare_key=$CLOUDFLARE_KEY" \
+        --vault-password-file <(echo "dummy") \
+        ansible/setup.yml
+
+# 6. Deploy Application (Docker Compose)
+
+deploy:
+  extends: .ansible_template
+  stage: deploy
+  needs:
+    - terraform-apply
+    - configure
+  script:
+    - export SERVER_IP=$(cat terraform/ec2_ip.txt)
+    - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+    - echo "$ANSIBLE_VAULT_PASSWORD" > vault_pass.txt
+    - ansible-galaxy collection install -r ansible/requirements.yml
+    - |
+      ansible-playbook \
+        -i "$SERVER_IP," \
+        -e "ansible_user=ubuntu" \
+        -e "image=$CI_REGISTRY_IMAGE" \
+        -e "tag=$IMAGE_TAG" \
+        -e "registry=$CI_REGISTRY" \
+        -e "registry_user=$CI_DEPLOY_USER" \
+        -e "registry_password=$CI_DEPLOY_PASSWORD" \
+        ansible/deploy-app.yml --vault-password-file vault_pass.txt
+
+# 7. Destroy (manual)
+
+terraform-destroy:
+  extends: .terraform_template
+  stage: infra
+  script:
+    - terraform -chdir=terraform init
+    - terraform -chdir=terraform destroy -auto-approve
+  when: manual

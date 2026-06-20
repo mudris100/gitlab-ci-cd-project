@@ -1,0 +1,13 @@
+package dev.udris.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import dev.udris.entity.Comment;
+import dev.udris.entity.Post;
+
+import java.util.List;
+
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+
+	List<Comment> findByPost(Post post);
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Comment</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+	<main class="container">
+		<div class="card">
+			<div class="text-center" style="margin-bottom: 30px;">
+				<span style="font-size: 3rem;">💬</span>
+				<h2>Update Your Comment</h2>
+			</div>
+
+			<form th:action="@{/comments/{id}(id=${commentDto.id()})}" th:method="post" th:object="${commentDto}">
+				<div class="form-group">
+					<label for="content">Comment Content</label>
+					<textarea id="content" th:field="*{content}" required style="min-height: 150px;"
+						placeholder="Update your thoughts..."></textarea>
+				</div>
+
+				<div
+					style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+					<button type="button" class="btn" style="background: #e2e8f0; color: #4a5568;"
+						onclick="window.history.back()">Cancel</button>
+					<button type="submit" class="btn btn-primary">Update Comment</button>
+				</div>
+			</form>
+		</div>
+	</main>
+
+    <th:block th:replace="~{fragments/common :: footer}"></th:block>
+</body>
+
+</html>

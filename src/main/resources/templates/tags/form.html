@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Tag</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 30px;">
+                <span style="font-size: 3rem;">🏷️</span>
+                <h2>Create New Tag</h2>
+            </div>
+
+            <form th:action="@{/admin/tags}" th:object="${tag}" method="post">
+                <div class="form-group">
+                    <label for="name">Tag Name</label>
+                    <input type="text" th:field="*{name}" placeholder="Enter tag name" required
+                        th:attr="minlength=2, maxlength=50" />
+                </div>
+
+                <div
+                    style="display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <a th:href="@{/admin/tags}" class="btn" style="background: #e2e8f0; color: #4a5568;">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create Tag</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/common :: footer}"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+# Eclipse
+.classpath
+.project
+.settings/
+.loadpath
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# Environment files
+.env
+*.env
+.aider*
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+.vscode/
+.ansible/
+inventory/hosts.ini
+

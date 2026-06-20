@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Why I Love Spring Boot",
+    "content": "Spring Boot makes building Java applications so much faster. With minimal setup, I can get started quickly and stay focused on business logic.",
+    "authorUsername": "martins"
+  },
+  {
+    "title": "Understanding Dependency Injection",
+    "content": "DI is a core principle in Spring. It promotes loose coupling and better testability. This post walks through constructor vs field injection.",
+    "authorUsername": "user"
+  },
+  {
+    "title": "Getting Started with JPA",
+    "content": "JPA simplifies database access in Java. Let’s look at entities, repositories, and the power of Spring Data JPA.",
+    "authorUsername": "martins"
+  },
+  {
+    "title": "5 Common Mistakes in REST API Design",
+    "content": "Avoid these pitfalls: inconsistent naming, poor error handling, forgetting pagination, and more. A must-read for every backend dev.",
+    "authorUsername": "user"
+  },
+  {
+    "title": "From Monolith to Microservices",
+    "content": "Breaking down a large Java monolith into manageable microservices using Spring Cloud. A beginner-friendly migration guide.",
+    "authorUsername": "martins"
+  },
+  {
+    "title": "Working with Thymeleaf in Spring Boot",
+    "content": "Thymeleaf is a server-side Java templating engine. In this post, I’ll show how to create dynamic HTML pages using model attributes.",
+    "authorUsername": "user"
+  },
+  {
+    "title": "Database Migrations with Flyway",
+    "content": "Keep your schema changes versioned and under control. Flyway integrates easily with Spring Boot.",
+    "authorUsername": "martins"
+  },
+  {
+    "title": "Securing Your App with Spring Security",
+    "content": "Authentication, authorization, and more. Let’s explore how to protect your application endpoints using Spring Security.",
+    "authorUsername": "user"
+  },
+  {
+    "title": "Welcome to the Blog",
+    "content": "This is the first post in our awesome blog!",
+    "authorUsername": "anna"
+  },
+  {
+    "title": "Second Thoughts",
+    "content": "Here we talk about how to write effective blog posts.",
+    "authorUsername": "john"
+  }
+]

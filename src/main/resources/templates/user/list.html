@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Authors</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+	<main class="container">
+		<div class="card">
+			<div class="text-center" style="margin-bottom: 30px;">
+				<span style="font-size: 3rem;">👥</span>
+				<h2>Our Contributors</h2>
+			</div>
+
+			<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+				<div th:each="user : ${users}" class="card"
+					style="margin-bottom: 0; padding: 20px; background: var(--bg-light);">
+					<div class="text-center">
+						<h3 th:text="${user.username}" style="margin-bottom: 10px;">Username</h3>
+						<span class="badge badge-primary" th:text="${user.posts.size + ' Posts'}">0 Posts</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+    <th:block th:replace="~{fragments/common :: footer}"></th:block>
+</body>
+
+</html>

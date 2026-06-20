@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authors</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+	<main class="container">
+		<div class="card">
+			<h2>Blog Authors</h2>
+			<div style="display: flex; flex-direction: column; gap: 10px;">
+				<div th:each="user : ${users}">
+					<a class="btn btn-primary" style="display: block; text-align: left; justify-content: flex-start;"
+						th:href="@{/admin/users/{id} (id=${user.id()})}" th:text="${user.username() + ': ' + user.email()}">user</a>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

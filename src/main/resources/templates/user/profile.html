@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <div class="text-center page-header">
+            <h1>My Blog Posts</h1>
+            <p>Manage and track your published content</p>
+        </div>
+
+        <div class="posts-grid" th:if="${posts != null and !posts.isEmpty()}">
+            <div class="card" th:each="post : ${posts}">
+                <div class="post-card-header">
+                    <h3 th:text="${post.title}" style="color: white; margin: 0;">Post Title</h3>
+                </div>
+
+                <div class="post-meta">
+                    <span th:text="${#temporals.format(post.publishedOn, 'MMM dd, yyyy')}">Date</span>
+                    <span th:if="${post.status.name() == 'DRAFT'}" class="badge"
+                        style="background: #ed8936;">Draft</span>
+                    <span th:if="${post.status.name() == 'PUBLISHED'}" class="badge badge-primary">Published</span>
+                </div>
+
+                <div class="post-excerpt"
+                    th:text="${post.content.length() > 150 ? post.content.substring(0, 150) + '...' : post.content}">
+                    Post content preview...
+                </div>
+
+                <div
+                    style="display: flex; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <a th:href="@{/posts/{id}/edit(id=${post.postId})}" class="btn btn-primary"
+                        style="padding: 8px 15px;">Edit</a>
+                    <form th:action="@{/posts/{id}/delete(id=${post.postId})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger" style="padding: 8px 15px;"
+                            onclick="return confirm('Are you sure you want to delete this post?')">Delete</button>
+                    </form>
+                    <form th:if="${post.status.name() == 'DRAFT'}" th:action="@{/posts/{id}/publish(id=${post.postId})}"
+                        method="post" class="d-inline">
+                        <button type="submit" class="btn btn-success" style="padding: 8px 15px;">Publish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card text-center" th:if="${posts == null or posts.isEmpty()}">
+            <h2>No posts yet</h2>
+            <p>Start sharing your thoughts with the world!</p>
+            <a href="/posts/new" class="btn btn-primary" style="margin-top: 20px;">Create Your First Post</a>
+        </div>
+    </main>
+</body>
+
+</html>

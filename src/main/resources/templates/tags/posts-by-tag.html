@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Blog</title>
+    <th:block th:replace="~{fragments/common :: common-css}"></th:block>
+    <th:block th:replace="~{fragments/common :: theme-script}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/common :: navbar}"></th:block>
+
+    <main class="container">
+        <div class="text-center" style="margin-bottom: 40px; color: white;">
+            <h1 th:text="${'Posts with tag: ' + tag}">Posts with tag</h1>
+        </div>
+
+        <div th:if="${#lists.isEmpty(posts)}" class="card text-center">
+            <p>No blog posts found with this tag.</p>
+        </div>
+
+        <div class="posts-grid">
+            <article th:each="post : ${posts}" class="card">
+                <div class="post-card-header">
+                    <h2 class="post-title">
+                        <a th:href="@{'/posts/' + ${post.postId}}" th:text="${post.title}">Post Title</a>
+                    </h2>
+                </div>
+
+                <div class="post-excerpt"
+                    th:text="${post.content.length() > 150 ? post.content.substring(0, 150) + '...' : post.content}">
+                </div>
+
+                <div class="post-meta">
+                    <span>📅 <span th:text="${#temporals.format(post.publishedOn, 'MMM dd, yyyy')}">Date</span></span>
+                    <span class="badge badge-primary" th:text="${tag}">Tag</span>
+                </div>
+
+                <div style="padding-top: 15px;">
+                    <a th:href="@{'/posts/' + ${post.postId}}" class="btn btn-primary">Read More →</a>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/common :: footer}"></th:block>
+</body>
+
+</html>

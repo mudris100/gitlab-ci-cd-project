@@ -1,0 +1,5 @@
+db_url: "jdbc:postgresql://db:5432/blogdb"
+db_user: "admin"
+db_name: "blogdb"
+spring_profiles_active: "prod"
+redis_host: "redis"

@@ -1,0 +1,12 @@
+---
+- name: Format swap file
+  ansible.builtin.command:
+    cmd: mkswap /swapfile
+  changed_when: true
+  listen: Format swap file
+
+- name: Enable swap
+  ansible.builtin.command:
+    cmd: swapon /swapfile
+  changed_when: true
+  listen: Enable swap
